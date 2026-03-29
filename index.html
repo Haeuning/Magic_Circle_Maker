@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>마법진 생성기 기초</title>
+    <style>
+        /* CSS: 디자인 (검은 배경, 중앙 정렬) */
+        body { background-color: #1a1a1a; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; }
+        canvas { background-color: #000; border: 2px solid #444; margin-top: 20px; box-shadow: 0 0 20px rgba(0,255,255,0.2); }
+        .controls { margin-top: 20px; padding: 20px; background: #333; border-radius: 10px; }
+        label { display: inline-block; width: 100px; }
+    </style>
+</head>
+<body>
+
+    <h2>마법진 텍스처 추출기 (기초)</h2>
+
+    <canvas id="magicCanvas" width="400" height="400"></canvas>
+
+    <div class="controls">
+        <div>
+            <label>원 크기:</label>
+            <input type="range" id="radius" min="10" max="180" value="100">
+        </div>
+        <div>
+            <label>선 굵기:</label>
+            <input type="range" id="thickness" min="1" max="10" value="2">
+        </div>
+        <br>
+        <button onclick="downloadImage()">이미지 추출하기</button>
+    </div>
+
+    <script>
+        // JavaScript: 기능 (그림 그리기 및 상호작용)
+        const canvas = document.getElementById('magicCanvas');
+        const ctx = canvas.getContext('2d');
+        const radiusInput = document.getElementById('radius');
+        const thicknessInput = document.getElementById('thickness');
+
+        // 그림을 그리는 함수
+        function drawMagicCircle() {
+            const r = radiusInput.value;
+            const t = thicknessInput.value;
+
+            // 1. 캔버스 초기화 (이전 그림 지우기)
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 2. 마법진 그리기 설정
+            ctx.strokeStyle = '#00ffff'; // 선 색상 (하늘색)
+            ctx.lineWidth = t;           // 선 굵기
+            ctx.shadowBlur = 15;         // 발광 효과
+            ctx.shadowColor = '#00ffff';
+
+            // 3. 중심 잡기
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            // 4. 원 그리기
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, r, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // 5. 안쪽 작은 원 추가
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, r * 0.7, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+
+        // 이미지 파일로 저장하는 기능
+        function downloadImage() {
+            const link = document.createElement('a');
+            link.download = 'magic_circle.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        // 슬라이더 값이 바뀔 때마다 다시 그리기
+        radiusInput.addEventListener('input', drawMagicCircle);
+        thicknessInput.addEventListener('input', drawMagicCircle);
+
+        // 첫 화면 그리기
+        drawMagicCircle();
+    </script>
+</body>
+</html>
